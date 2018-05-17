@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">PhotoFilter</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="error">Error Deleting Image</string>
+    <string name="delete_success">Images was deleted!</string>
+    <string name="delete_failure">Image deletion failed</string>
+    <string name="saved_message">Image Saved at %1$s</string>
+    <string name="not_saved">Image not saved!</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="label_open">Open</string>
+    <string name="label_save">Save</string>
+
+</resources>
