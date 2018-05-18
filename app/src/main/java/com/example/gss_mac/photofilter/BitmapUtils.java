@@ -1,27 +1,35 @@
 /*
-* Copyright (C) 2017 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*  	http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.gss_mac.photofilter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
@@ -37,10 +45,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-class BitmapUtils {
+public class BitmapUtils {
+
 
     private static final String FILE_PROVIDER_AUTHORITY = "com.example.gss_mac.photofilterr.fileprovider";
-
+    public static Bitmap _selected_bitmap;
 
     /**
      * Resamples the captured photo to fit the screen for better memory usage.
@@ -75,6 +84,51 @@ class BitmapUtils {
 
         return BitmapFactory.decodeFile(imagePath);
     }
+
+    public static Bitmap getBitmapFromGallery(Context context, Uri path, int width, int height) {
+
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(path, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(picturePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, width, height);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(picturePath, options);
+    }
+
+    private static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
 
     /**
      * Creates the temporary image file in the cache directory.
@@ -193,4 +247,56 @@ class BitmapUtils {
         shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI);
         context.startActivity(shareIntent);
     }
+
+    public static ProgressDialog getProgressDialogue(Context context) {
+        ProgressDialog progress = new ProgressDialog(context);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        return progress;
+    }
+
+
+    public static ColorMatrixColorFilter brightIt(int fb , float contrast) {
+        ColorMatrix cmB = new ColorMatrix();
+        cmB.set(new float[]{
+                contrast, 0, 0, 0, fb,
+                0, contrast, 0, 0, fb,
+                0, 0, contrast, 0, fb,
+                0, 0, 0, contrast, 0});
+
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.set(cmB);
+        //Canvas c = new Canvas(b2);
+        //Paint paint = new Paint();
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(colorMatrix);
+        //paint.setColorFilter(f);
+        return f;
+    }
+
+    public static ColorMatrixColorFilter SetColors(int brighntness, float contrast , float satur , Bitmap bitmap)
+    {
+        ColorMatrix cm = new ColorMatrix();
+
+        cm.set(new float[] {
+                contrast, 0, 0, 0, brighntness,
+                0, contrast, 0, 0, brighntness,
+                0, 0, contrast, 0, brighntness,
+                0, 0, 0, 1, 0 });
+
+        ColorMatrix saturationCM = new ColorMatrix();
+        saturationCM.setSaturation(satur);
+        cm.postConcat(saturationCM);
+
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.set(cm);
+
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(colorMatrix);
+        return f;
+
+    }
+
+
+
+
 }

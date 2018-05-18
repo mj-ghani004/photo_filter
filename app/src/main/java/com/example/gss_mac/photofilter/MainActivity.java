@@ -1,8 +1,11 @@
 package com.example.gss_mac.photofilter;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,13 +18,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,10 +47,13 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab_camera;
     @BindView(R.id.fab_gallery)
     FloatingActionButton fab_gallery;
+    @BindView(R.id.sample_image)
+    ImageView sampleImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -163,23 +172,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // If the image capture activity was called and was successful
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
-        {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             // Process the image and set it to the TextView
-            processAndSetImage();
-        }
-        else if (requestCode == PICK_IMAGE && resultCode == RESULT_OK)
-        {
-            Toast.makeText(getApplicationContext(), "Pictures Taken From Gallery", Toast.LENGTH_LONG).show();
+            ImageFromCamera(this);
+        } else if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            ImageFromGallery(this, data);
 
-        }
-        else if (requestCode == PICK_IMAGE && resultCode == RESULT_CANCELED)
-        {
+        } else if (requestCode == PICK_IMAGE && resultCode == RESULT_CANCELED) {
             Toast.makeText(getApplicationContext(), "Pictures Cancelled From Gallery", Toast.LENGTH_LONG).show();
 
-        }
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_CANCELED)
-        {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_CANCELED) {
             // Otherwise, delete the temporary image file
             BitmapUtils.deleteImageFile(this, mTempPhotoPath);
             Toast.makeText(getApplicationContext(), "Pictures Canceled From Camera", Toast.LENGTH_LONG).show();
@@ -189,37 +191,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * Method for processing the captured image and setting it to the TextView.
      */
-    private void processAndSetImage() {
+    private void ImageFromCamera(Context context) {
 
         Toast.makeText(getApplicationContext(), "Picture Captures", Toast.LENGTH_LONG).show();
 
-//        // Toggle Visibility of the views
-//        mEmojifyButton.setVisibility(View.GONE);
-//        mTitleTextView.setVisibility(View.GONE);
-//        mSaveFab.setVisibility(View.VISIBLE);
-//        mShareFab.setVisibility(View.VISIBLE);
-//        mClearFab.setVisibility(View.VISIBLE);
-//
-//        // Resample the saved image to fit the ImageView
-//        mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
-//
-//
-//        // Detect the faces and overlay the appropriate emoji
-//        mResultsBitmap = Emojifier.detectFacesandOverlayEmoji(this, mResultsBitmap);
-//
-//        // Set the new bitmap to the ImageView
-//        mImageView.setImageBitmap(mResultsBitmap);
+        Intent mIntent = new Intent(context, FilterActivity.class);
+        context.startActivity(mIntent);
+
+    }
+
+    private void ImageFromGallery(Context context, Intent data) {
+
+        Toast.makeText(getApplicationContext(), "Image from Gallery", Toast.LENGTH_LONG).show();
+        Intent mIntent = new Intent(context, FilterActivity.class);
+
+        try {
+            final Uri imageUri = data.getData();
+            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+            BitmapUtils._selected_bitmap = selectedImage;
+//            mIntent.putExtra("image", selectedImage);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show();
+        }
+
+
+        context.startActivity(mIntent);
+
+
     }
 
     private void getImageFromGallery() {
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
-        Intent chooserIntent = Intent.createChooser(intent , "Select Picture");
+        Intent chooserIntent = Intent.createChooser(intent, "Select Picture");
         startActivityForResult(chooserIntent, PICK_IMAGE);
     }
 

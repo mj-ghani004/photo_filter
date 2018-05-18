@@ -3,4 +3,6 @@
     <color name="colorPrimary">#F4511E</color>
     <color name="colorPrimaryDark">#BF360C</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="filter_label_normal">#000</color>
 </resources>
