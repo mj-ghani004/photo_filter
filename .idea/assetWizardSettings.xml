@@ -19,8 +19,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$PROJECT_DIR$/../../Photo App Data/baseline-settings-black-24/2x/baseline_settings_black_24dp.png" />
-                                      <entry key="outputName" value="ic_action_setting" />
+                                      <entry key="imageAsset" value="$PROJECT_DIR$/../../Photo App Data/baseline-share-black-24/2x/baseline_share_black_24dp.png" />
+                                      <entry key="outputName" value="ic_action_share" />
                                       <entry key="theme" value="HOLO_DARK" />
                                     </map>
                                   </option>

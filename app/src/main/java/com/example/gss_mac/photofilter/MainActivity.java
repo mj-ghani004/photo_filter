@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -50,13 +51,19 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.sample_image)
     ImageView sampleImage;
 
+    private android.hardware.Camera camera = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        BitmapUtils._selected_bitmap = null;
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         ButterKnife.bind(this);
 
@@ -136,6 +143,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchCamera() {
 
+//        try {
+//            camera = android.hardware.Camera.open();
+//        } catch (RuntimeException e) {
+//            Toast.makeText(getApplicationContext(),"Camera Error" , Toast.LENGTH_SHORT).show();
+//        }
+
+
         // Create the capture image intent
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -190,14 +204,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(camera != null)
+            camera.release();
+
+    }
 
     /**
      * Method for processing the captured image and setting it to the TextView.
      */
     private void ImageFromCamera(Context context) {
 
-        Toast.makeText(getApplicationContext(), "Picture Captures", Toast.LENGTH_LONG).show();
 
+        BitmapUtils._selected_bitmap = BitmapUtils.resamplePic(context, mTempPhotoPath);
         Intent mIntent = new Intent(context, FilterActivity.class);
         context.startActivity(mIntent);
 
@@ -205,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void ImageFromGallery(Context context, Intent data) {
 
-        Toast.makeText(getApplicationContext(), "Image from Gallery", Toast.LENGTH_LONG).show();
         Intent mIntent = new Intent(context, FilterActivity.class);
 
         try {

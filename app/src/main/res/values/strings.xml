@@ -18,5 +18,6 @@
     <string name="label_brightness">Brightness</string>
     <string name="labe_contrast">Contrast</string>
     <string name="label_saturation">Saturation</string>
+    <string name="label_share">Share</string>
 
 </resources>

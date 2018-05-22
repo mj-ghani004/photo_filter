@@ -51,6 +51,7 @@ public class BitmapUtils {
     private static final String FILE_PROVIDER_AUTHORITY = "com.example.gss_mac.photofilterr.fileprovider";
     public static Bitmap _selected_bitmap;
 
+
     /**
      * Resamples the captured photo to fit the screen for better memory usage.
      *
@@ -106,8 +107,7 @@ public class BitmapUtils {
         return BitmapFactory.decodeFile(picturePath, options);
     }
 
-    private static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -203,7 +203,7 @@ public class BitmapUtils {
         String imageFileName = "JPEG_" + timeStamp + ".jpg";
         File storageDir = new File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                        + "/Emojify");
+                        + "/PhotoFilter");
         boolean success = true;
         if (!storageDir.exists()) {
             success = storageDir.mkdirs();
@@ -225,8 +225,8 @@ public class BitmapUtils {
             galleryAddPic(context, savedImagePath);
 
             // Show a Toast with the save location
-            String savedMessage = context.getString(R.string.saved_message, savedImagePath);
-            Toast.makeText(context, savedMessage, Toast.LENGTH_SHORT).show();
+//            String savedMessage = context.getString(R.string.saved_message, savedImagePath);
+//            Toast.makeText(context, savedMessage, Toast.LENGTH_SHORT).show();
         }
 
         return savedImagePath;
@@ -257,7 +257,7 @@ public class BitmapUtils {
     }
 
 
-    public static ColorMatrixColorFilter brightIt(int fb , float contrast) {
+    public static ColorMatrixColorFilter brightIt(int fb, float contrast) {
         ColorMatrix cmB = new ColorMatrix();
         cmB.set(new float[]{
                 contrast, 0, 0, 0, fb,
@@ -274,15 +274,14 @@ public class BitmapUtils {
         return f;
     }
 
-    public static ColorMatrixColorFilter SetColors(int brighntness, float contrast , float satur , Bitmap bitmap)
-    {
+    public static ColorMatrixColorFilter SetColors(int brighntness, float contrast, float satur, Bitmap bitmap) {
         ColorMatrix cm = new ColorMatrix();
 
-        cm.set(new float[] {
+        cm.set(new float[]{
                 contrast, 0, 0, 0, brighntness,
                 0, contrast, 0, 0, brighntness,
                 0, 0, contrast, 0, brighntness,
-                0, 0, 0, 1, 0 });
+                0, 0, 0, 1, 0});
 
         ColorMatrix saturationCM = new ColorMatrix();
         saturationCM.setSaturation(satur);
@@ -297,6 +296,34 @@ public class BitmapUtils {
     }
 
 
+    public static Bitmap createFiteredBitmap(int brighntness, float contrast, float satur, Bitmap original) {
+
+        Bitmap bitmap = Bitmap.createBitmap(original.getWidth(), original.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        Paint paint = new Paint();
+
+        ColorMatrix cm = new ColorMatrix();
+
+        cm.set(new float[]{
+                contrast, 0, 0, 0, brighntness,
+                0, contrast, 0, 0, brighntness,
+                0, 0, contrast, 0, brighntness,
+                0, 0, 0, 1, 0});
+
+        ColorMatrix saturationCM = new ColorMatrix();
+        saturationCM.setSaturation(satur);
+        cm.postConcat(saturationCM);
+
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.set(cm);
+
+
+        paint.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
+        canvas.drawBitmap(original, 0, 0, paint);
+
+        return bitmap;
+    }
 
 
 }

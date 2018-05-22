@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -31,7 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 
-public class FilterActivity extends AppCompatActivity implements FiltersFragment.FiltersListFragmentListener , SettingFragment.EditImageFragmentListener{
+public class FilterActivity extends AppCompatActivity implements FiltersFragment.FiltersListFragmentListener, SettingFragment.EditImageFragmentListener {
 
     private static final int PICK_IMAGE = 200;
 
@@ -59,11 +63,12 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     private int mBrighntess;
     private float mContrast;
     private float mSaturation;
+    private ColorMatrixColorFilter colorMatrixColorFilter;
 
-    static
-    {
+    static {
         System.loadLibrary("NativeImageProcessor");
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +105,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
         mBrighntess = 0;
         mContrast = 1;
-        mSaturation = 1 ;
+        mSaturation = 1;
 
         final_image = BitmapUtils._selected_bitmap.copy(Bitmap.Config.ARGB_8888, true);
 
@@ -116,7 +121,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
                         return true;
 
                     case R.id.menu_frames:
-                       // Toast.makeText(getApplicationContext(), "Frames Clicked", Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getApplicationContext(), "Frames Clicked", Toast.LENGTH_LONG).show();
                         setFragment(framesFragment);
 
 
@@ -127,7 +132,6 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
                         setFragment(settingFragment);
 //                        settingFragment.resetSeekbars(true);
-
 
 
                         return true;
@@ -171,6 +175,10 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
         if (id == R.id.action_open) {
 
             getImageFromGallery();
+            return true;
+        } else if (id == R.id.action_save) {
+
+            saveImage(item.getActionView());
             return true;
         }
 
@@ -242,26 +250,24 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
         startActivityForResult(chooserIntent, PICK_IMAGE);
     }
 
-    private void setFragment(Fragment fragment)
-    {
+    private void setFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container,fragment);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
     public void onFilterSelected(Filter filter) {
 
-
-
+        progressDialog.show();
         image_preview.clearColorFilter();
 
         selected_image = BitmapUtils._selected_bitmap;
 
-        filtered_image = selected_image.copy(Bitmap.Config.ARGB_8888 , true);
+        filtered_image = selected_image.copy(Bitmap.Config.ARGB_8888, true);
         image_preview.setImageBitmap(filter.processFilter(filtered_image));
         final_image = filtered_image.copy(Bitmap.Config.ARGB_8888, true);
-
+        progressDialog.dismiss();
         settingFragment.resetSeekbars(true);
 
     }
@@ -270,18 +276,14 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     public void onBrightnessChanged(int brightness) {
 
         mBrighntess = brightness;
-
-
-        image_preview.setColorFilter(BitmapUtils.SetColors(mBrighntess , mContrast , mSaturation , final_image));
-
-
+        image_preview.setColorFilter(BitmapUtils.SetColors(mBrighntess, mContrast, mSaturation, final_image));
     }
 
     @Override
     public void onSaturationChanged(float saturation) {
 
         mSaturation = saturation;
-        image_preview.setColorFilter(BitmapUtils.SetColors(mBrighntess , mContrast , mSaturation , final_image));
+        image_preview.setColorFilter(BitmapUtils.SetColors(mBrighntess, mContrast, mSaturation, final_image));
 
     }
 
@@ -289,9 +291,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     public void onContrastChanged(float contrast) {
 
         mContrast = contrast;
-        image_preview.setColorFilter(BitmapUtils.SetColors(mBrighntess , mContrast , mSaturation , final_image));
-
-
+        image_preview.setColorFilter(BitmapUtils.SetColors(mBrighntess, mContrast, mSaturation, final_image));
     }
 
     @Override
@@ -303,4 +303,24 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     public void onEditCompleted() {
 
     }
+
+    private void saveImage(View view)
+    {
+        progressDialog.show();
+        BitmapUtils.saveImage(getApplicationContext(),
+                BitmapUtils.createFiteredBitmap(mBrighntess,mContrast,mSaturation,final_image));
+
+        progressDialog.dismiss();
+        Snackbar.make(mContainer, "Image Saved Successfully!", Snackbar.LENGTH_LONG)
+                .setAction("Show", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                })
+                .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                .show();
+    }
+
+
 }

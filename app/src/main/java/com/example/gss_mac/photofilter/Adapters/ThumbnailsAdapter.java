@@ -1,5 +1,6 @@
 package com.example.gss_mac.photofilter.Adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.media.Image;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.gss_mac.photofilter.BitmapUtils;
 import com.example.gss_mac.photofilter.R;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.utils.ThumbnailItem;
@@ -23,18 +25,21 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.vi
     private List<ThumbnailItem> list;
     private Context ctx;
     private int selectedIndex = 0;
+    private ProgressDialog progressDialog;
 
-    public ThumbnailsAdapter(List<ThumbnailItem> list, Context context , ThumbnailsAdapterListener listener) {
+
+    public ThumbnailsAdapter(List<ThumbnailItem> list, Context context, ThumbnailsAdapterListener listener) {
         this.list = list;
         this.ctx = context;
         this.listener = listener;
+        progressDialog = BitmapUtils.getProgressDialogue(context);
     }
 
 
     @NonNull
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.thumbnail_list_item , parent , false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.thumbnail_list_item, parent, false);
         return new viewHolder(view);
     }
 

@@ -19,9 +19,9 @@ import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
  */
 public class SettingFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
 
-    private static SeekBar mBrightness;
-    private static SeekBar mContrast;
-    private static SeekBar mSaturation;
+    private  SeekBar mBrightness;
+    private  SeekBar mContrast;
+    private  SeekBar mSaturation;
 
     private Boolean RESET = false;
 
@@ -54,9 +54,12 @@ public class SettingFragment extends Fragment implements SeekBar.OnSeekBarChange
         if (RESET) {
 
             Toast.makeText(getActivity(), "Resume", Toast.LENGTH_LONG).show();
+//
+//            mBrightness.setMax(510);
+//            mBrightness.setProgress(255);
 
-            mBrightness.setMax(510);
-            mBrightness.setProgress(255);
+            mBrightness.setMax(140);
+            mBrightness.setProgress(70);
 
             // keeping contrast value b/w 1.0 - 3.0
             mContrast.setMax(20);
@@ -81,8 +84,8 @@ public class SettingFragment extends Fragment implements SeekBar.OnSeekBarChange
         // keeping brightness value b/w -100 / +100
 
 
-        mBrightness.setMax(510);
-        mBrightness.setProgress(255);
+        mBrightness.setMax(140);
+        mBrightness.setProgress(70);
 
         // keeping contrast value b/w 1.0 - 3.0
         mContrast.setMax(20);
@@ -110,7 +113,7 @@ public class SettingFragment extends Fragment implements SeekBar.OnSeekBarChange
                 // brightness values are b/w -100 to +100
 
 //                listener.onBrightnessChanged(progress-brightnessprogress.intValue());
-                listener.onBrightnessChanged(progress - 255);
+                listener.onBrightnessChanged(progress - 70);
             }
 
             if (seekBar.getId() == R.id.seekbar_contrast) {
