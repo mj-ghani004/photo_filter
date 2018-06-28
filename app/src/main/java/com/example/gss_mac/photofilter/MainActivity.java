@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.gss_mac.photofilter.Utility.FrameUtils;
 import com.github.clans.fab.FloatingActionButton;
 
 
@@ -32,6 +33,8 @@ import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.gss_mac.photofilter.R.drawable.dummy_frame;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +66,44 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sampleImage = findViewById(R.id.sample_image);
+        //This is sample picture.
+        //Please take picture form gallery or camera.
+        Bitmap PictureBitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.pp_3);
+
+//        Bitmap DummyFrame = BitmapUtils.reSampleFrame(this);
+//        Bitmap DummyPicture = BitmapUtils.reSampleDummyPicture(this);
+
+       // sampleImage.setImageBitmap(Picture);
+
+        //This is sample frame.
+        // the number of left, top, right, bottom is the area to show picture.
+        // last argument is degree of rotation to fit picture and frame.
+        //actuall
+      //  FrameUtils frameA = new FrameUtils("frame_a.png", 390, 1550, 2700, 380, 4);
+
+        //=========================Selected For Landscape==================================
+       // FrameUtils frameA = new FrameUtils("frame_a.png", 700, 2700, 5150, 480, 0);// 3100 right
+        //=========================Selected For Portrait==================================
+         //FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3100, 400, 0);
+        //Stretched
+     //    FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3100, 400, 0);
+
+         FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3500, 400, 0);
+
+
+//       // FrameUtils frameA = new FrameUtils("frame_a.png", 0, 0, 0, 0, 0);
+//        //FrameUtils frameA = new FrameUtils("frame_a.png", 0, 1000, 3000, 440, 4);
+//
+          //  Bitmap DummyResult = frameA.DummyMergeWith(this,DummyPicture,DummyFrame);
+//            sampleImage.setImageBitmap(DummyResult);
+
+        Bitmap mergedBitmap = frameA.mergeWith(this, PictureBitmap);
+
+
+        sampleImage.setImageBitmap(mergedBitmap);
+        // sampleImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.dummy_frame));
 
 
         ButterKnife.bind(this);
@@ -207,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(camera != null)
+        if (camera != null)
             camera.release();
 
     }

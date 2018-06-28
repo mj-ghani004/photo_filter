@@ -32,6 +32,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -50,6 +52,8 @@ public class BitmapUtils {
 
     private static final String FILE_PROVIDER_AUTHORITY = "com.example.gss_mac.photofilterr.fileprovider";
     public static Bitmap _selected_bitmap;
+    public static ArrayList<Bitmap> filtered_images = new ArrayList<>();
+    public static int current_filter_index = 0;
 
 
     /**
@@ -57,7 +61,7 @@ public class BitmapUtils {
      *
      * @param context   The application context.
      * @param imagePath The path of the photo to be resampled.
-     * @return The resampled bitmap
+     * @return The reSampled bitmap
      */
     static Bitmap resamplePic(Context context, String imagePath) {
 
@@ -84,6 +88,49 @@ public class BitmapUtils {
         bmOptions.inSampleSize = scaleFactor;
 
         return BitmapFactory.decodeFile(imagePath);
+    }
+
+    public static Bitmap reSampleFrame(Context context) {
+
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        int displayWidth = display.getWidth();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeResource(context.getResources(), R.drawable.dummy_frame,options);
+        int width = options.outWidth;
+
+        if (width > displayWidth) {
+            int widthRatio = Math.round((float) width / (float) displayWidth);
+            options.inSampleSize = widthRatio;
+        }
+        options.inJustDecodeBounds = false;
+        Bitmap scaledBitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.dummy_frame, options);
+
+        return scaledBitmap;
+    }
+    public static Bitmap reSampleDummyPicture(Context context) {
+
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        int displayWidth = display.getWidth();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeResource(context.getResources(), R.drawable.startbg,options);
+        int width = options.outWidth;
+
+        if (width > displayWidth) {
+            int widthRatio = Math.round((float) width / (float) displayWidth);
+            options.inSampleSize = widthRatio;
+        }
+        options.inJustDecodeBounds = false;
+        Bitmap scaledBitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.startbg, options);
+
+        return scaledBitmap;
     }
 
     public static Bitmap getBitmapFromGallery(Context context, Uri path, int width, int height) {
@@ -245,6 +292,7 @@ public class BitmapUtils {
         shareIntent.setType("image/*");
         Uri photoURI = FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, imageFile);
         shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI);
+        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(shareIntent);
     }
 

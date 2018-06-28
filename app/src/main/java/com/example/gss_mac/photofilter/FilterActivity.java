@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
@@ -21,11 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.gss_mac.photofilter.Fragments.FiltersFragment;
 import com.example.gss_mac.photofilter.Fragments.FramesFragment;
 import com.example.gss_mac.photofilter.Fragments.SettingFragment;
+import com.example.gss_mac.photofilter.Utility.FrameUtils;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
@@ -35,7 +38,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 
-public class FilterActivity extends AppCompatActivity implements FiltersFragment.FiltersListFragmentListener, SettingFragment.EditImageFragmentListener {
+public class FilterActivity extends AppCompatActivity implements FiltersFragment.FiltersListFragmentListener
+        , SettingFragment.EditImageFragmentListener
+        , FramesFragment.FrameListFragmentListener {
 
     private static final int PICK_IMAGE = 200;
 
@@ -57,6 +62,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     // Loading Spinner
 
     private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
 
     //Edit Image Setting
 
@@ -72,7 +78,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_filter);
+        setContentView(R.layout.activity_filter_new);
 
         progressDialog = BitmapUtils.getProgressDialogue(this);
 
@@ -90,6 +96,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
         image_preview = findViewById(R.id.image_preview);
         mBottomNav = findViewById(R.id.botton_nav);
         mContainer = findViewById(R.id.fragment_container);
+        progressBar = findViewById(R.id.progressBar);
 
         // initializing Fragments
 
@@ -99,7 +106,9 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
         setFragment(filtersFragment);
         filtersFragment.setListener(this);
+        framesFragment.setListener(this);
         settingFragment.setListener(this);
+
 
         //Setting Variables
 
@@ -116,12 +125,10 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
                 switch (item.getItemId()) {
                     case R.id.menu_filters:
-                        //Toast.makeText(getApplicationContext(), "Home Clicked", Toast.LENGTH_LONG).show();
                         setFragment(filtersFragment);
                         return true;
 
                     case R.id.menu_frames:
-                        // Toast.makeText(getApplicationContext(), "Frames Clicked", Toast.LENGTH_LONG).show();
                         setFragment(framesFragment);
 
 
@@ -131,7 +138,6 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
 
                         setFragment(settingFragment);
-//                        settingFragment.resetSeekbars(true);
 
 
                         return true;
@@ -178,8 +184,12 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
             return true;
         } else if (id == R.id.action_save) {
 
-            saveImage(item.getActionView());
+            saveImage();
             return true;
+        } else if (id == R.id.action_share) {
+
+
+            BitmapUtils.shareImage(getApplicationContext(), BitmapUtils.saveImage(this, final_image));
         }
 
         return super.onOptionsItemSelected(item);
@@ -229,6 +239,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
             filtersFragment = new FiltersFragment();
             filtersFragment.setListener(this);
+            filtersFragment.setPictureUpdated(true);
             setFragment(filtersFragment);
 
 //            progressDialog.dismiss();
@@ -253,21 +264,46 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     private void setFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
+        //fragmentTransaction.commit();
         fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
-    public void onFilterSelected(Filter filter) {
+    public void onFilterSelected(final Filter filter) {
 
-        progressDialog.show();
+        progressDialog = BitmapUtils.getProgressDialogue(getApplicationContext());
+//        progressDialog.show();
+        //progressBar.setVisibility(View.VISIBLE);
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                // Do something after 5s = 5000ms
+//                //progressBar.setVisibility(View.GONE);
+//                progressDialog.dismiss();
+//
+//            }
+//        }, 3000);
+
+        final Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 5s = 5000ms
+                image_preview.setImageBitmap(filter.processFilter(filtered_image));
+            }
+        }, 1000);
+
         image_preview.clearColorFilter();
 
         selected_image = BitmapUtils._selected_bitmap;
 
         filtered_image = selected_image.copy(Bitmap.Config.ARGB_8888, true);
-        image_preview.setImageBitmap(filter.processFilter(filtered_image));
+
+
         final_image = filtered_image.copy(Bitmap.Config.ARGB_8888, true);
-        progressDialog.dismiss();
+
+
         settingFragment.resetSeekbars(true);
 
     }
@@ -304,13 +340,12 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
     }
 
-    private void saveImage(View view)
-    {
-        progressDialog.show();
+    private void saveImage() {
+        // progressDialog.show();
         BitmapUtils.saveImage(getApplicationContext(),
-                BitmapUtils.createFiteredBitmap(mBrighntess,mContrast,mSaturation,final_image));
+                BitmapUtils.createFiteredBitmap(mBrighntess, mContrast, mSaturation, final_image));
 
-        progressDialog.dismiss();
+        // progressDialog.dismiss();
         Snackbar.make(mContainer, "Image Saved Successfully!", Snackbar.LENGTH_LONG)
                 .setAction("Show", new View.OnClickListener() {
                     @Override
@@ -318,9 +353,20 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
                     }
                 })
-                .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                .setActionTextColor(getResources().getColor(android.R.color.holo_red_light))
                 .show();
     }
 
 
+    @Override
+
+    public void onFrameClicked(int id) {
+
+        FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3500, 400, 0);
+        Bitmap mergedBitmap = frameA.mergeWith(this, BitmapUtils._selected_bitmap);
+        image_preview.setImageBitmap(mergedBitmap);
+
+        Toast.makeText(getApplicationContext(), "Yoo i am Clicked from Activity " + Integer.toString(id), Toast.LENGTH_SHORT).show();
+
+    }
 }

@@ -15,4 +15,13 @@
         android:padding="4dp"
         android:scrollbars="none" />
 
+    <ProgressBar
+
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_56"
+
+        />
+
 </FrameLayout>

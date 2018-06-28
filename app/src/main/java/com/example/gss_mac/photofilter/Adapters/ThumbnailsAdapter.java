@@ -2,7 +2,9 @@ package com.example.gss_mac.photofilter.Adapters;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.Image;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +14,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.gss_mac.photofilter.BitmapUtils;
 import com.example.gss_mac.photofilter.R;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.utils.ThumbnailItem;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.viewHolder> {
@@ -33,6 +37,7 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.vi
         this.ctx = context;
         this.listener = listener;
         progressDialog = BitmapUtils.getProgressDialogue(context);
+
     }
 
 
@@ -50,6 +55,17 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.vi
         holder.filterName.setText(item.filterName);
         holder.thumbnail.setImageBitmap(item.image);
 
+        //BitmapUtils.filtered_images.add(item.image);
+       // Glide.with(ctx).load(item.image).asBitmap().into(holder.thumbnail);
+
+       // ByteArrayOutputStream stream = new ByteArrayOutputStream();
+       // item.image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+//        Glide.with(ctx)
+//                .load(stream.toByteArray())
+//                .asBitmap()
+//                .into(holder.thumbnail);
+
         holder.thumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,6 +73,19 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.vi
                 listener.onFilterSelected(item.filter);
                 selectedIndex = position;
                 notifyDataSetChanged();
+                progressDialog.show();
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Do something after 5s = 5000ms
+                        //progressBar.setVisibility(View.GONE);
+                        progressDialog.dismiss();
+
+                    }
+                }, 3000);
+               // BitmapUtils.current_filter_index = position;
             }
         });
 

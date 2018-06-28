@@ -11,30 +11,42 @@
         layout="@layout/toolbar" />
 
 
-    <ImageView
-        android:id="@+id/image_preview"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@id/toolbar"
-        android:background="@drawable/food_bg"
-        android:src="@drawable/portrait_kid" />
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/image_preview"
-        android:layout_marginBottom="@dimen/margin_56"/>
+            <ImageView
+                android:id="@+id/image_preview"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/food_bg"
+                android:layout_marginTop="@dimen/margin_56"
+                android:src="@drawable/portrait_kid" />
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/botton_nav"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        app:menu="@menu/navigation_menu"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="#eee"/>
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/image_preview"
+                android:layout_marginBottom="@dimen/margin_56" />
+
+            <ProgressBar
+
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/label_140"
+                android:visibility="gone"
+
+                />
+
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/botton_nav"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="#eee"
+                app:menu="@menu/navigation_menu" />
+
 
 
 </RelativeLayout>
