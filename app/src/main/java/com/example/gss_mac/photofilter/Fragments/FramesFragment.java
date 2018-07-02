@@ -40,15 +40,15 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
 
     FramesFragment.FrameListFragmentListener listener;
 
-    RecyclerView recyclerView;
-    public static ArrayList<FrameModel> FrameListItem;
+    public  RecyclerView recyclerView;
+    public static ArrayList<FrameModel> FrameListItem = new ArrayList<>();
     public static FrameAdapter mAdapter;
 
     //Progress Dialogue
 
     private static ProgressBar progressBar;
 
-    FramesFragment.PrepareThumbnailTask task;
+    FramesFragment.PrepareFramesThumbnail task;
     private boolean pictureUpdated = true;
 
     public void setListener(FramesFragment.FrameListFragmentListener listener) {
@@ -68,7 +68,7 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
         super.onCreate(savedInstanceState);
 
         //BitmapUtils.filtered_images.clear();
-        task = new FramesFragment.PrepareThumbnailTask(getActivity());
+        task = new FramesFragment.PrepareFramesThumbnail(getActivity());
 
         setHasOptionsMenu(true);
     }
@@ -77,14 +77,14 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_filters, container, false);
+        View view = inflater.inflate(R.layout.fragment_frames, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progressBar);
 
         if (pictureUpdated) { // If Picture updated do not populate again just use previous one
 
             setPictureUpdated(false);
-            FrameListItem = new ArrayList<>();
+           // FrameListItem = new ArrayList<>();
 //        mAdapter = new ThumbnailsAdapter(getActivity(), thumbnailItemList, this);
             mAdapter = new FrameAdapter(getActivity() , FrameListItem , this);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -94,7 +94,9 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
                     getResources().getDisplayMetrics());
             recyclerView.addItemDecoration(new SpacesItemDecoration(space));
             recyclerView.setAdapter(mAdapter);
+
             task.execute();
+
 
         } else {
             mAdapter = new FrameAdapter(getActivity() , FrameListItem ,this);
@@ -108,6 +110,12 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
             progressBar.setVisibility(View.GONE);
         }
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+      //  mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -134,18 +142,18 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
 //                            Async Task
 //===================================================================
 
-    public static class PrepareThumbnailTask extends AsyncTask<Void, Void, Void> {
+    public static class PrepareFramesThumbnail extends AsyncTask<Void, Void, Void> {
 
         //  private ProgressDialog progressDialog;
         private Bitmap local_image, rawImage;
         private Context mContext;
 
-
-        PrepareThumbnailTask(Context context) {
+        PrepareFramesThumbnail(Context context) {
 
             //  progressDialog = BitmapUtils.getProgressDialogue(context);
 //            local_image = BitmapUtils._selected_bitmap;
             mContext = context;
+
 //            rawImage = local_image.copy(Bitmap.Config.ARGB_8888, true);
 
 
@@ -166,11 +174,10 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
         protected Void doInBackground(Void... voids) {
 
 
-            FrameListItem.add(new FrameModel("Landscape"
-                    ,ContextCompat.getDrawable(mContext,R.drawable.lpm_dummyframe)));
+            ArrayList<FrameModel> arrayList = BitmapUtils.getFramesList(mContext);
+            FrameListItem.clear();
+            FrameListItem.addAll(arrayList);
 
-            FrameListItem.add(new FrameModel("Landscape"
-                    ,ContextCompat.getDrawable(mContext,R.drawable.pfm_dummy)));
 
             return null;
         }
@@ -180,8 +187,10 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+
             mAdapter.notifyDataSetChanged();
             progressBar.setVisibility(View.GONE);
+
 
         }
     }

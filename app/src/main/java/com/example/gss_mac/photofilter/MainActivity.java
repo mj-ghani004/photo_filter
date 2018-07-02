@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         //Stretched
      //    FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3100, 400, 0);
 
-         FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3500, 400, 0);
+     //    FrameUtils frameA = new FrameUtils(1, 0, 5350, 3500, 400, 0);
 
 
 //       // FrameUtils frameA = new FrameUtils("frame_a.png", 0, 0, 0, 0, 0);
@@ -99,10 +99,10 @@ public class MainActivity extends AppCompatActivity {
           //  Bitmap DummyResult = frameA.DummyMergeWith(this,DummyPicture,DummyFrame);
 //            sampleImage.setImageBitmap(DummyResult);
 
-        Bitmap mergedBitmap = frameA.mergeWith(this, PictureBitmap);
+        //Bitmap mergedBitmap = frameA.mergeWith(this, PictureBitmap);
 
 
-        sampleImage.setImageBitmap(mergedBitmap);
+        //sampleImage.setImageBitmap(mergedBitmap);
         // sampleImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.dummy_frame));
 
 

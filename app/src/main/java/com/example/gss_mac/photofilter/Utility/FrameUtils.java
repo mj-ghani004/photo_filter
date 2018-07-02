@@ -6,13 +6,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.widget.Toast;
 
+import com.example.gss_mac.photofilter.BitmapUtils;
 import com.example.gss_mac.photofilter.R;
 
 public class FrameUtils {
 
     //filename of frame
-    private String mFrameName;
+    private int mFrameName;
 
     //Rect of picture area in frame
     private final Rect mPictureRect;
@@ -20,16 +22,22 @@ public class FrameUtils {
     //degree of rotation to fit picture and frame.
     private final float mRorate;
 
-    public FrameUtils(String frameName,int left, int top, int right, int bottom, float rorate) {
-        mFrameName = frameName;
+    //Save Context
+    Context mContext;
+
+    public FrameUtils(int frameId,int left, int top, int right, int bottom, float rorate) {
+        mFrameName = frameId;
         mPictureRect = new Rect(left, top, right, bottom);
         mRorate = rorate;
     }
 
     public Bitmap mergeWith(Context context, Bitmap pictureBitmap) {
        // Bitmap frameBitmap = AssetsUtil.getBitmapFromAsset(context, mFrameName);
-         Bitmap frameBitmap = BitmapFactory.decodeResource(context.getResources() , R.drawable.pfm_dummy);
-         //Bitmap frameBitmap = BitmapFactory.decodeResource(context.getResources() , R.drawable.lpm_dummyframe);
+       //  Bitmap frameBitmap = BitmapFactory.decodeResource(context.getResources() , R.drawable.pfm_dummy);
+        mContext = context;
+        Bitmap frameBitmap = getFrame(mFrameName);
+
+        //Bitmap frameBitmap = BitmapFactory.decodeResource(context.getResources() , R.drawable.lpm_dummyframe);
 
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = Bitmap.createBitmap(frameBitmap.getWidth(), frameBitmap.getHeight(), conf);
@@ -136,5 +144,53 @@ public class FrameUtils {
         matrix.postTranslate(left, top);
 
         return matrix;
+    }
+
+    private Bitmap getFrame(int id )
+    {
+        Bitmap bitmap = null;
+        if (BitmapUtils.isPortrait)
+        {
+            switch (id)
+            {
+                case 0 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.pfm_dummy);
+                    break;
+                }
+                default:
+
+                    Toast.makeText(mContext,"Cannot Select Frame",Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        else
+        {
+            switch (id)
+            {
+                case 0 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
+                    break;
+                }
+                case 1 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
+                    break;
+                }
+                case 2 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
+                    break;
+                }
+
+
+                default:
+
+                    Toast.makeText(mContext,"Cannot Select Frame",Toast.LENGTH_SHORT).show();
+
+            }
+        }
+        return  bitmap;
     }
 }

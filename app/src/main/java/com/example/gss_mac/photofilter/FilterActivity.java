@@ -153,6 +153,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
 
         selected_image = BitmapUtils._selected_bitmap;
+        filtered_image = selected_image.copy(Bitmap.Config.ARGB_8888, true);
         image_preview.setImageBitmap(selected_image);
 
 
@@ -242,6 +243,8 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
             filtersFragment.setPictureUpdated(true);
             setFragment(filtersFragment);
 
+            framesFragment.setPictureUpdated(true);
+
 //            progressDialog.dismiss();
 
 //            mIntent.putExtra("image", selectedImage);
@@ -290,13 +293,16 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
             @Override
             public void run() {
                 // Do something after 5s = 5000ms
-                image_preview.setImageBitmap(filter.processFilter(filtered_image));
+                filtered_image = filter.processFilter(filtered_image);
+                image_preview.setImageBitmap(filtered_image);
+//                image_preview.setImageBitmap(filter.processFilter(filtered_image));
             }
         }, 1000);
 
         image_preview.clearColorFilter();
 
-        selected_image = BitmapUtils._selected_bitmap;
+       // selected_image = BitmapUtils._selected_bitmap;
+//        selected_image = image_preview.
 
         filtered_image = selected_image.copy(Bitmap.Config.ARGB_8888, true);
 
@@ -342,6 +348,9 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
     private void saveImage() {
         // progressDialog.show();
+        //final_image = filtered_image.copy(Bitmap.Config.ARGB_8888, true);
+
+
         BitmapUtils.saveImage(getApplicationContext(),
                 BitmapUtils.createFiteredBitmap(mBrighntess, mContrast, mSaturation, final_image));
 
@@ -361,10 +370,17 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     @Override
 
     public void onFrameClicked(int id) {
+        FrameUtils frameA;
+        if (BitmapUtils.isPortrait) {
+             frameA = new FrameUtils(id, 0, 5350, 3500, 400, 0);
+        } else {
+             frameA = new FrameUtils(id, 700, 2700, 5150, 480, 0);
+        }
+        Bitmap mergedBitmap = frameA.mergeWith(this, filtered_image);
+//        Bitmap mergedBitmap = frameA.mergeWith(this, BitmapUtils._selected_bitmap);
 
-        FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3500, 400, 0);
-        Bitmap mergedBitmap = frameA.mergeWith(this, BitmapUtils._selected_bitmap);
         image_preview.setImageBitmap(mergedBitmap);
+        final_image = mergedBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         Toast.makeText(getApplicationContext(), "Yoo i am Clicked from Activity " + Integer.toString(id), Toast.LENGTH_SHORT).show();
 

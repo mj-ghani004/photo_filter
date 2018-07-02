@@ -30,12 +30,15 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.example.gss_mac.photofilter.Models.FrameModel;
 import com.example.gss_mac.photofilter.R;
 
 import java.io.File;
@@ -53,6 +56,7 @@ public class BitmapUtils {
     private static final String FILE_PROVIDER_AUTHORITY = "com.example.gss_mac.photofilterr.fileprovider";
     public static Bitmap _selected_bitmap;
     public static ArrayList<Bitmap> filtered_images = new ArrayList<>();
+    public static boolean isPortrait;
     public static int current_filter_index = 0;
 
 
@@ -90,6 +94,44 @@ public class BitmapUtils {
         return BitmapFactory.decodeFile(imagePath);
     }
 
+
+    public static ArrayList<FrameModel> getFramesList(Context context )
+    {
+        ArrayList<FrameModel> arrayList = new ArrayList<>();
+        arrayList.clear();
+
+        // Get the dimensions of the original bitmap
+        if(_selected_bitmap != null)
+        {
+            int width = _selected_bitmap.getWidth();
+            int height   = _selected_bitmap.getHeight();
+            if(height > width)
+            {
+                isPortrait = true;
+                arrayList.add(new FrameModel("Portrait"
+                        ,ContextCompat.getDrawable(context,R.drawable.pfm_dummy)));
+            }
+            else
+            {
+                isPortrait = false;
+                arrayList.add(new FrameModel("Landscape"
+                        , ContextCompat.getDrawable(context,R.drawable.lpm_dummyframe)));
+
+                arrayList.add(new FrameModel("Landscape"
+                        , ContextCompat.getDrawable(context,R.drawable.lpm_dummyframe)));
+
+
+                arrayList.add(new FrameModel("Landscape"
+                        , ContextCompat.getDrawable(context,R.drawable.lpm_dummyframe)));
+            }
+        }
+
+
+         return arrayList;
+
+
+
+    }
     public static Bitmap reSampleFrame(Context context) {
 
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -262,7 +304,7 @@ public class BitmapUtils {
             savedImagePath = imageFile.getAbsolutePath();
             try {
                 OutputStream fOut = new FileOutputStream(imageFile);
-                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                image.compress(Bitmap.CompressFormat.JPEG, 60, fOut);
                 fOut.close();
             } catch (Exception e) {
                 e.printStackTrace();
