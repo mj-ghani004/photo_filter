@@ -4,5 +4,17 @@
     <color name="colorPrimaryDark">#BF360C</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="white">#fdfdfd</color>
+    <color name="whitetranperant">#80ffffff</color>
+    <color name="unslecteditem">#838383</color>
+
     <color name="filter_label_normal">#000</color>
+
+    <color name="black_alpha">#87000000</color>
+
+    <color name="green">#2c9fd5</color>
+
+    <color name="thumb_seekbar">#2c9fd5</color>
+
+
 </resources>

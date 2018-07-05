@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/margin_horizontal"
     android:paddingRight="@dimen/margin_horizontal"
+    android:background="#212121"
     tools:context=".Fragments.SettingFragment">
 
     <LinearLayout
@@ -20,13 +21,18 @@
             android:layout_width="@dimen/lbl_edit_image_control"
             android:layout_height="wrap_content"
             android:text="@string/label_brightness"
+            android:textColor="@android:color/white"
             />
 
         <SeekBar
             android:id="@+id/seekbar_brightness"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:layout_weight="1"
+            android:progressDrawable="@drawable/custom_seekbar"
+            android:thumbTint="@color/thumb_seekbar"/>
     </LinearLayout>
 
     <LinearLayout
@@ -40,13 +46,19 @@
         <TextView
             android:layout_width="@dimen/lbl_edit_image_control"
             android:layout_height="wrap_content"
-            android:text="@string/labe_contrast" />
+            android:text="@string/labe_contrast"
+            android:textColor="@android:color/white"/>
 
         <SeekBar
             android:id="@+id/seekbar_contrast"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:layout_weight="1"
+            android:thumbTint="@color/thumb_seekbar"
+            android:progressDrawable="@drawable/custom_seekbar"
+           />
     </LinearLayout>
 
     <LinearLayout
@@ -59,13 +71,18 @@
         <TextView
             android:layout_width="@dimen/lbl_edit_image_control"
             android:layout_height="wrap_content"
-            android:text="@string/label_saturation" />
+            android:text="@string/label_saturation"
+            android:textColor="@android:color/white"/>
 
         <SeekBar
             android:id="@+id/seekbar_saturation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:layout_weight="1"
+            android:thumbTint="@color/thumb_seekbar"
+            android:progressDrawable="@drawable/custom_seekbar"/>
     </LinearLayout>
 
 </LinearLayout>

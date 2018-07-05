@@ -40,6 +40,16 @@ public class SettingFragment extends Fragment implements SeekBar.OnSeekBarChange
     public void resetSeekbars(boolean value) {
 
         RESET = value;
+//        mBrightness.setMax(140);
+//        mBrightness.setProgress(70);
+//
+//        // keeping contrast value b/w 1.0 - 3.0
+//        mContrast.setMax(20);
+//        mContrast.setProgress(0);
+//
+//        // keeping saturation value b/w 0.0 - 3.0
+//        mSaturation.setMax(30);
+//        mSaturation.setProgress(10);
 
     }
 

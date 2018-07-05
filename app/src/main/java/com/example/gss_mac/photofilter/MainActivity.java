@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         //This is sample picture.
         //Please take picture form gallery or camera.
         Bitmap PictureBitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.pp_3);
+                R.drawable.l_5 );
 
 //        Bitmap DummyFrame = BitmapUtils.reSampleFrame(this);
 //        Bitmap DummyPicture = BitmapUtils.reSampleDummyPicture(this);
@@ -83,27 +83,26 @@ public class MainActivity extends AppCompatActivity {
         //actuall
       //  FrameUtils frameA = new FrameUtils("frame_a.png", 390, 1550, 2700, 380, 4);
 
-        //=========================Selected For Landscape==================================
-       // FrameUtils frameA = new FrameUtils("frame_a.png", 700, 2700, 5150, 480, 0);// 3100 right
-        //=========================Selected For Portrait==================================
-         //FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3100, 400, 0);
-        //Stretched
-     //    FrameUtils frameA = new FrameUtils("frame_a.png", 0, 5350, 3100, 400, 0);
+        //=========================Selected For Landscape OLD==================================
+        //FrameUtils frameA = new FrameUtils("frame_a.png", 700, 2700, 5150, 480, 0);// 3100 right
+        //=========================Selected For Landscape NEW MULTI RES==================================
+         FrameUtils frameA = new FrameUtils(1, 100, 1250, 2050, 0, 0);// 3100 right
 
-     //    FrameUtils frameA = new FrameUtils(1, 0, 5350, 3500, 400, 0);
+
+        //=========================Selected For Portrait==================================
+
+        // NEW PORTRAIT FOR MULTI RES
+         //FrameUtils frameA = new FrameUtils(1, 0, 1950, 1150, 0, 0);
 
 
 //       // FrameUtils frameA = new FrameUtils("frame_a.png", 0, 0, 0, 0, 0);
 //        //FrameUtils frameA = new FrameUtils("frame_a.png", 0, 1000, 3000, 440, 4);
 //
-          //  Bitmap DummyResult = frameA.DummyMergeWith(this,DummyPicture,DummyFrame);
-//            sampleImage.setImageBitmap(DummyResult);
-
-        //Bitmap mergedBitmap = frameA.mergeWith(this, PictureBitmap);
 
 
-        //sampleImage.setImageBitmap(mergedBitmap);
-        // sampleImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.dummy_frame));
+
+          Bitmap mergedBitmap = frameA.mergeWithTesting(this, PictureBitmap);
+        sampleImage.setImageBitmap(mergedBitmap);
 
 
         ButterKnife.bind(this);

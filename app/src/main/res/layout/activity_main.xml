@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        android:src="@drawable/gallery_icon"/>
+        android:src="@drawable/bg"
+        />
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/menu"
@@ -81,10 +82,11 @@
             android:id="@+id/fab_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_gallery"
+            android:src="@drawable/ic_action_gallery"
+            android:background="@drawable/ic_action_gallery"
             fab:fab_label="Gallery"
-            fab:fab_size="mini"
 
+            app:fab_size="mini"
             fab:fab_colorNormal="#d686f1"
             fab:fab_colorPressed="#8955c9"
             fab:fab_colorRipple="#99FFFFFF"

@@ -90,9 +90,9 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.vi
         });
 
         if (selectedIndex == position) {
-            holder.filterName.setTextColor(ContextCompat.getColor(ctx, R.color.colorPrimary));
+            holder.filterName.setTextColor(ContextCompat.getColor(ctx, R.color.white));
         } else {
-            holder.filterName.setTextColor(ContextCompat.getColor(ctx, R.color.filter_label_normal));
+            holder.filterName.setTextColor(ContextCompat.getColor(ctx, R.color.unslecteditem));
         }
 
 

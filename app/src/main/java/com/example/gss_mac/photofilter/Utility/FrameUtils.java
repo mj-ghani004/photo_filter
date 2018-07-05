@@ -64,17 +64,17 @@ public class FrameUtils {
         return bitmap;
 
     }
-
-    public Bitmap DummyMergeWith(Context context, Bitmap pictureBitmap , Bitmap frame) {
+    public Bitmap mergeWithTesting(Context context, Bitmap pictureBitmap) {
         // Bitmap frameBitmap = AssetsUtil.getBitmapFromAsset(context, mFrameName);
-      //  Bitmap frameBitmap = BitmapFactory.decodeResource(context.getResources() , R.drawable.dummy_frame);
+        //  Bitmap frameBitmap = BitmapFactory.decodeResource(context.getResources() , R.drawable.pfm_dummy);
+        mContext = context;
+       // Bitmap frameBitmap = getFrame(mFrameName);
 
-        Bitmap frameBitmap = frame;
+        Bitmap frameBitmap = BitmapFactory.decodeResource(context.getResources() , R.drawable.land_update);
+
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = Bitmap.createBitmap(frameBitmap.getWidth(), frameBitmap.getHeight(), conf);
         Canvas canvas = new Canvas(bitmap);
-
-        int displayWidth = pictureBitmap.getWidth();
 
 //        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 //        Bitmap bitmap = Bitmap.createBitmap(pictureBitmap.getWidth(), pictureBitmap.getHeight(), conf);
@@ -83,24 +83,10 @@ public class FrameUtils {
         Matrix matrix = getMatrix (pictureBitmap);
         Matrix frame_matrix = getMatrix (frameBitmap);
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeResource(context.getResources(), R.drawable.startbg,options);
-        int width = options.outWidth;
-
-        if (width > displayWidth) {
-            int widthRatio = Math.round((float) width / (float) displayWidth);
-            options.inSampleSize = widthRatio;
-        }
-        options.inJustDecodeBounds = false;
-        Bitmap scaledBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.startbg, options);
 
 
-      //  canvas.drawBitmap(pictureBitmap, matrix, null);
-        canvas.drawBitmap(pictureBitmap, 0,0,null);
-        canvas.drawBitmap(scaledBitmap, 0,0, null);
+        canvas.drawBitmap(pictureBitmap, matrix, null);
+        canvas.drawBitmap(frameBitmap, 0,0, null);
 
 
 
@@ -111,6 +97,53 @@ public class FrameUtils {
         return bitmap;
 
     }
+//
+//    public Bitmap DummyMergeWith(Context context, Bitmap pictureBitmap , Bitmap frame) {
+//        // Bitmap frameBitmap = AssetsUtil.getBitmapFromAsset(context, mFrameName);
+//      //  Bitmap frameBitmap = BitmapFactory.decodeResource(context.getResources() , R.drawable.dummy_frame);
+//
+//        Bitmap frameBitmap = frame;
+//        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+//        Bitmap bitmap = Bitmap.createBitmap(frameBitmap.getWidth(), frameBitmap.getHeight(), conf);
+//        Canvas canvas = new Canvas(bitmap);
+//
+//        int displayWidth = pictureBitmap.getWidth();
+//
+////        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+////        Bitmap bitmap = Bitmap.createBitmap(pictureBitmap.getWidth(), pictureBitmap.getHeight(), conf);
+////        Canvas canvas = new Canvas(bitmap);
+//
+//        Matrix matrix = getMatrix (pictureBitmap);
+//        Matrix frame_matrix = getMatrix (frameBitmap);
+//
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true;
+//
+//        BitmapFactory.decodeResource(context.getResources(), R.drawable.startbg,options);
+//        int width = options.outWidth;
+//
+//        if (width > displayWidth) {
+//            int widthRatio = Math.round((float) width / (float) displayWidth);
+//            options.inSampleSize = widthRatio;
+//        }
+//        options.inJustDecodeBounds = false;
+//        Bitmap scaledBitmap = BitmapFactory.decodeResource(context.getResources(),
+//                R.drawable.startbg, options);
+//
+//
+//      //  canvas.drawBitmap(pictureBitmap, matrix, null);
+//        canvas.drawBitmap(pictureBitmap, 0,0,null);
+//        canvas.drawBitmap(scaledBitmap, 0,0, null);
+//
+//
+//
+//
+//        //canvas.drawBitmap(pictureBitmap, matrix, null);
+//
+//
+//        return bitmap;
+//
+//    }
 
 
 
@@ -158,6 +191,31 @@ public class FrameUtils {
                     bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.pfm_dummy);
                     break;
                 }
+                case 1 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.pfm_dummy);
+                    break;
+                }
+                case 2 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.pfm_dummy);
+                    break;
+                }
+                case 3 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.pfm_dummy);
+                    break;
+                }
+                case 4 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.pfm_dummy);
+                    break;
+                }
+                case 5 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.pfm_dummy);
+                    break;
+                }
                 default:
 
                     Toast.makeText(mContext,"Cannot Select Frame",Toast.LENGTH_SHORT).show();
@@ -170,12 +228,12 @@ public class FrameUtils {
             {
                 case 0 :
                 {
-                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.land_update);
                     break;
                 }
                 case 1 :
                 {
-                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.land_final);
                     break;
                 }
                 case 2 :
@@ -183,6 +241,24 @@ public class FrameUtils {
                     bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
                     break;
                 }
+                case 3 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
+                    break;
+                }
+
+                case 4 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
+                    break;
+                }
+
+                case 5 :
+                {
+                    bitmap =  BitmapFactory.decodeResource(mContext.getResources() , R.drawable.lpm_dummyframe);
+                    break;
+                }
+
 
 
                 default:

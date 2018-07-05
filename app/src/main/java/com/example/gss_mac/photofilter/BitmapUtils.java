@@ -33,6 +33,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -110,16 +111,30 @@ public class BitmapUtils {
                 isPortrait = true;
                 arrayList.add(new FrameModel("Portrait"
                         ,ContextCompat.getDrawable(context,R.drawable.pfm_dummy)));
+                arrayList.add(new FrameModel("Portrait"
+                        ,ContextCompat.getDrawable(context,R.drawable.pfm_dummy)));
+                arrayList.add(new FrameModel("Portrait"
+                        ,ContextCompat.getDrawable(context,R.drawable.pfm_dummy)));
+                arrayList.add(new FrameModel("Portrait"
+                        ,ContextCompat.getDrawable(context,R.drawable.pfm_dummy)));
+                arrayList.add(new FrameModel("Portrait"
+                        ,ContextCompat.getDrawable(context,R.drawable.pfm_dummy)));
             }
             else
             {
                 isPortrait = false;
                 arrayList.add(new FrameModel("Landscape"
-                        , ContextCompat.getDrawable(context,R.drawable.lpm_dummyframe)));
+                        , ContextCompat.getDrawable(context,R.drawable.land_update)));
 
                 arrayList.add(new FrameModel("Landscape"
                         , ContextCompat.getDrawable(context,R.drawable.lpm_dummyframe)));
 
+
+                arrayList.add(new FrameModel("Landscape"
+                        , ContextCompat.getDrawable(context,R.drawable.lpm_dummyframe)));
+
+                arrayList.add(new FrameModel("Landscape"
+                        , ContextCompat.getDrawable(context,R.drawable.lpm_dummyframe)));
 
                 arrayList.add(new FrameModel("Landscape"
                         , ContextCompat.getDrawable(context,R.drawable.lpm_dummyframe)));
@@ -336,6 +351,7 @@ public class BitmapUtils {
         shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI);
         shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(shareIntent);
+
     }
 
     public static ProgressDialog getProgressDialogue(Context context) {

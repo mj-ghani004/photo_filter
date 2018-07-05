@@ -1,5 +1,6 @@
 package com.example.gss_mac.photofilter.Adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.gss_mac.photofilter.BitmapUtils;
 import com.example.gss_mac.photofilter.Models.FrameModel;
 import com.example.gss_mac.photofilter.R;
 
@@ -23,6 +25,8 @@ public class FrameAdapter extends RecyclerView.Adapter<FrameAdapter.viewHolder> 
     private Context ctx;
     private FrameAdapter.FrameClicked listener;
     private int selectedIndex = 0;
+    private ProgressDialog progressDialog;
+
 
 
 
@@ -31,6 +35,7 @@ public class FrameAdapter extends RecyclerView.Adapter<FrameAdapter.viewHolder> 
         this.ctx = context;
         this.arrayList = arrayList;
         this.listener  = listener;
+        progressDialog = BitmapUtils.getProgressDialogue(context);
     }
     @NonNull
     @Override
@@ -51,31 +56,31 @@ public class FrameAdapter extends RecyclerView.Adapter<FrameAdapter.viewHolder> 
             @Override
             public void onClick(View v) {
                // Toast.makeText(ctx , "Yoo I a")
-                listener.OnFrameClicked(position);
                 selectedIndex = position;
                 notifyDataSetChanged();
 
-//                progressDialog.show();
-//
-//                final Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        // Do something after 5s = 5000ms
-//                        //progressBar.setVisibility(View.GONE);
-//                        progressDialog.dismiss();
-//
-//                    }
-//                }, 3000);
+                progressDialog.show();
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Do something after 5s = 5000ms
+                        //progressBar.setVisibility(View.GONE);
+                        listener.OnFrameClicked(position);
+                        progressDialog.dismiss();
+
+                    }
+                }, 500);
 
 
             }
         });
 
         if (selectedIndex == position) {
-            holder.frameName.setTextColor(ContextCompat.getColor(ctx, R.color.colorPrimary));
+            holder.frameName.setTextColor(ContextCompat.getColor(ctx, R.color.white));
         } else {
-            holder.frameName.setTextColor(ContextCompat.getColor(ctx, R.color.filter_label_normal));
+            holder.frameName.setTextColor(ContextCompat.getColor(ctx, R.color.unslecteditem));
         }
 
     }

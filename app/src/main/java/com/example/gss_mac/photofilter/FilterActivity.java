@@ -20,6 +20,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -78,6 +80,9 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_filter_new);
 
         progressDialog = BitmapUtils.getProgressDialogue(this);
@@ -87,7 +92,8 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        getSupportActionBar().setTitle("Filters Settings");
+        getSupportActionBar().setTitle(" ");
+
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -190,7 +196,11 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
         } else if (id == R.id.action_share) {
 
 
-            BitmapUtils.shareImage(getApplicationContext(), BitmapUtils.saveImage(this, final_image));
+            BitmapUtils.shareImage(getApplicationContext(),
+                    BitmapUtils.saveImage(
+                            this,
+                            BitmapUtils.createFiteredBitmap(mBrighntess, mSaturation, mContrast, final_image)
+                    ));
         }
 
         return super.onOptionsItemSelected(item);
@@ -233,6 +243,8 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
             final Uri imageUri = data.getData();
             final InputStream imageStream = getContentResolver().openInputStream(imageUri);
             selected_image = BitmapFactory.decodeStream(imageStream);
+            filtered_image = selected_image;
+
             BitmapUtils._selected_bitmap = selected_image;
             image_preview.setImageBitmap(selected_image);
             final_image = selected_image.copy(Bitmap.Config.ARGB_8888, true);
@@ -242,7 +254,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
             filtersFragment.setListener(this);
             filtersFragment.setPictureUpdated(true);
             setFragment(filtersFragment);
-
+            settingFragment.resetSeekbars(true);
             framesFragment.setPictureUpdated(true);
 
 //            progressDialog.dismiss();
@@ -293,15 +305,16 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
             @Override
             public void run() {
                 // Do something after 5s = 5000ms
-                filtered_image = filter.processFilter(filtered_image);
-                image_preview.setImageBitmap(filtered_image);
+                Bitmap bitmap = filter.processFilter(filtered_image);
+                image_preview.setImageBitmap(bitmap);
+                changeFinalImage(bitmap);
 //                image_preview.setImageBitmap(filter.processFilter(filtered_image));
             }
         }, 1000);
 
         image_preview.clearColorFilter();
 
-       // selected_image = BitmapUtils._selected_bitmap;
+        selected_image = BitmapUtils._selected_bitmap;
 //        selected_image = image_preview.
 
         filtered_image = selected_image.copy(Bitmap.Config.ARGB_8888, true);
@@ -356,7 +369,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
 
         // progressDialog.dismiss();
         Snackbar.make(mContainer, "Image Saved Successfully!", Snackbar.LENGTH_LONG)
-                .setAction("Show", new View.OnClickListener() {
+                .setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
@@ -370,19 +383,34 @@ public class FilterActivity extends AppCompatActivity implements FiltersFragment
     @Override
 
     public void onFrameClicked(int id) {
+
         FrameUtils frameA;
         if (BitmapUtils.isPortrait) {
-             frameA = new FrameUtils(id, 0, 5350, 3500, 400, 0);
+            //Old
+            // frameA = new FrameUtils(id, 0, 5350, 3500, 400, 0);
+             // NEW MULTI RES
+             frameA = new FrameUtils(id, 0, 1950, 1150, 0, 0);
+//            frameA = new FrameUtils(1, 150, 5100, 3500, 700, 0);
         } else {
-             frameA = new FrameUtils(id, 700, 2700, 5150, 480, 0);
+            //OLD
+            //frameA = new FrameUtils(id, 700, 2700, 5150, 480, 0);
+            //NEW MULTI RES
+            frameA = new FrameUtils(id, 100, 1250, 2050, 0, 0);
         }
         Bitmap mergedBitmap = frameA.mergeWith(this, filtered_image);
 //        Bitmap mergedBitmap = frameA.mergeWith(this, BitmapUtils._selected_bitmap);
 
         image_preview.setImageBitmap(mergedBitmap);
+        changeFinalImage(mergedBitmap);
         final_image = mergedBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         Toast.makeText(getApplicationContext(), "Yoo i am Clicked from Activity " + Integer.toString(id), Toast.LENGTH_SHORT).show();
 
+
+    }
+
+    private void changeFinalImage(Bitmap bitmap) {
+        //filtered_image = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+        final_image = bitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
 }

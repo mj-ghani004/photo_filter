@@ -90,7 +90,7 @@ public class FramesFragment extends Fragment implements FrameAdapter.FrameClicke
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-            int space = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8,
+            int space = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
                     getResources().getDisplayMetrics());
             recyclerView.addItemDecoration(new SpacesItemDecoration(space));
             recyclerView.setAdapter(mAdapter);
